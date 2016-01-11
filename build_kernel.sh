@@ -50,6 +50,21 @@ if echo "$@" | grep -q "CC=\$(CROSS_COMPILE)gcc" ; then
 	dd if=/dev/zero bs=$((29360128-$(stat -c %s boot.img))) count=1 >> boot.img
 fi
 
-echo "done"
+echo "Done compiling boot image"
 ls -al boot.img
 echo ""
+
+if [ -e boot.img ] || [ "$1" == "zip" ] ; then
+	echo "Making zip"
+	rm -f arter97-kernel-"$(git rev-parse --abbrev-ref HEAD)"-"$(cat version)".zip 2>/dev/null
+	cp boot.img kernelzip/boot.img
+	tail -n $(($(cat ramdisk/default.prop | wc -l) - $(grep -n "START OVERRIDE" ramdisk/default.prop | cut -d : -f 1) + 1)) ramdisk/default.prop > kernelzip/default.prop
+	cd kernelzip/
+	zip arter97-kernel-"$(git rev-parse --abbrev-ref HEAD)"-"$(cat ../version)".zip *
+	cd ..
+	ls -al arter97-kernel-"$(git rev-parse --abbrev-ref HEAD)"-"$(cat version)".zip
+	rm kernelzip/boot.img
+	echo "Complete"
+else
+	echo "No boot image found"
+fi
