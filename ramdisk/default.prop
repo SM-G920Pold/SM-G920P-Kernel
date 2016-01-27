@@ -9,7 +9,6 @@ persist.eons.enabled=false
 persist.data.netmgrd.qos.enable=false
 telephony.lteOnCdmaDevice=1
 persist.rmnet.mux=enabled
-rild.libpath=/system/lib64/libsec-ril.so
 persist.cne.feature=0
 persist.radio.lte_vrte_ltd=1
 persist.security.ams.enforcing=1
