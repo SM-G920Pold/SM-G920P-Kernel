@@ -52,6 +52,7 @@ rm -rf *app/RCPComponents*
 rm -rf *app/SecKids*
 rm -rf *app/SecurityLogAgent*
 rm -rf *app/SPDClient*
+rm -rf *priv-app/ItsOn*
 rm -rf *app/SyncmlDM*
 rm -rf *app/UniversalMDMClient*
 rm -rf container/*Knox*
