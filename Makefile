@@ -4,6 +4,8 @@ SUBLEVEL = 95
 EXTRAVERSION =
 NAME = TOSSUG Baby Fish
 
+TOOLCHAIN_DIR = /home/buildserver/android/toolchains/aarch64-linux-android-5.3-kernel/bin/aarch64-linux-android-
+
 # *DOCUMENTATION*
 # To see a list of typical targets execute "make help"
 # More info can be located in ./README
@@ -197,8 +199,12 @@ SUBARCH := $(shell uname -m | sed -e s/i.86/x86/ -e s/x86_64/x86/ \
 # Note: Some architectures assign CROSS_COMPILE in their arch/*/Makefile
 #ARCH		?= $(SUBARCH)
 #CROSS_COMPILE	?= $(CONFIG_CROSS_COMPILE:"%"=%)
-ARCH		?= arm64
-CROSS_COMPILE	?= /home/arter97/linaro-64/bin/aarch64-none-elf-
+ARCH		= arm64
+ifdef CONFIG_WITH_CCACHE
+CROSS_COMPILE = $(CCACHE) $(TOOLCHAIN_DIR)
+else
+CROSS_COMPILE = $(TOOLCHAIN_DIR)
+endif
 
 # Architecture as present in compile.h
 UTS_MACHINE 	:= $(ARCH)
@@ -395,7 +401,7 @@ KBUILD_CFLAGS   := -Werror -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
 # arter97's optimizations
 KBUILD_CFLAGS	+= -pipe -fno-pic -O2 -march=armv8-a+crc -mcpu=cortex-a57.cortex-a53 -mtune=cortex-a57.cortex-a53
 # Other unnecessary warnings
-KBUILD_CFLAGS	+= -Wno-unused -Wno-maybe-uninitialized
+KBUILD_CFLAGS	+= -Wno-unused -Wno-maybe-uninitialized -Wno-error=declaration-after-statement -Wno-error
 
 KBUILD_AFLAGS_KERNEL :=
 KBUILD_CFLAGS_KERNEL :=
