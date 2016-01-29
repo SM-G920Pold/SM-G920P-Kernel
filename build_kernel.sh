@@ -42,6 +42,16 @@ find . | fakeroot cpio -H newc -o | lzop -9 > $RAMFS_TMP.cpio.lzo
 ls -lh $RAMFS_TMP.cpio.lzo
 cd $KERNELDIR
 
+if [ -e $KERNELDIR/arch/arm64/boot/Image ]; then
+	echo
+	echo "${bldcya}***** Final Touch for Kernel *****${txtrst}"
+	stat $KERNELDIR/arch/arm64/boot/Image || exit 1;
+	cp ./arch/arm64/boot/Image ./$BK/$TARGET
+	echo
+	echo "--- Creating custom dtb.img ---"
+	./tools/dtbtool -o dtb.img -s 2048 -p ./scripts/dtc/dtc ./arch/arm64/boot/dts/
+fi 
+
 echo "Making new boot image"
 gcc -w -s -pipe -O2 -Itools/libmincrypt -o tools/mkbootimg/mkbootimg tools/libmincrypt/*.c tools/mkbootimg/mkbootimg.c
 tools/mkbootimg/mkbootimg --kernel $KERNELDIR/arch/arm64/boot/Image --dt $KERNELDIR/dtb.img --ramdisk $RAMFS_TMP.cpio.lzo --base 0x10000000 --pagesize 2048 --ramdisk_offset 0x01000000 --tags_offset 0x00000100 --second_offset 0x00f00000 -o $KERNELDIR/boot.img
